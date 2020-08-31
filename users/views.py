@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, HttpResponse, reverse
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User, auth
 from polls.models import Post
+from polls.models import Profile
+from .forms import ProfilePicUpdateForm, UserProfileUpdateForm
 
 '''
 types of django messages--------->
@@ -25,8 +29,9 @@ def register(request):
 		if password1 == password2:
 			if not User.objects.filter(username=username).exists():
 				user = User.objects.create_user(username=username, password=password1, first_name=fname, last_name=lname, email=email)
+				p = Profile.objects.create(user=user)
+				p.save()
 				user.save()
-				print(f"{username} User created")
 				messages.success(request, f'{fname} your account created successfully. Now you can login here.')
 				return redirect('polls-signin')
 			else:
@@ -44,7 +49,7 @@ def register(request):
 def logout(request):
 	if request.user.is_authenticated:
 		auth.logout(request)
-		messages.info(request, f'Loggout successfully')
+		messages.success(request, f'Loggout successfully')
 		return redirect('polls-home')
 	else:
 		return redirect('polls-home')
@@ -69,10 +74,11 @@ def profile(request):
 		return redirect('polls-home')
 	else:
 		user = User.objects.filter(username=request.user.username).first()
-		posts = Post.objects.filter(author=user)
+		posts = Post.objects.filter(author=user).order_by('-date_posted')
 		context = {
 			'title': request.user.first_name,
 			'posts': posts,
+			'pic': user.profile.image.url,
 		}
 		return render(request, 'users/profile.html', context)
 
@@ -85,6 +91,8 @@ def edit(request, pk):
 		post.title = newTitle
 		post.content = newContent
 		post.save()
+		messages.success(request, 'Post updated')
+		return redirect('profile')
 
 
 	elif not request.user.is_authenticated:
@@ -98,16 +106,84 @@ def edit(request, pk):
 			return redirect('polls-home')
 		context = {
 			'post_title': post.title,
-			#'content':	post.content,
+			'content':	post.content,
 			'title': 'edit',
+			'pk': pk
 		}
-		return render(request, 'users/editPost.html')
+		return render(request, 'users/editPost.html', context)
 
-# def fetchProfile(request, user):
-# 	u = User.objecrs.get(username=user)
-# 	posts = Post.objects.filter(author=u).all()
-# 	context ={
-# 		'u': u,
-# 		'posts': posts,
-# 	}
-# 	return render(request, 'users/fetchProfile.html', context)
+def fetchProfile(request, username):
+	try:
+		u = User.objects.get(username=username)
+	except:
+		return redirect('polls-home')
+	posts = Post.objects.filter(author=u).all()
+	context = {
+		'u': u,
+		'posts': posts,
+		'title': u.username,
+	}
+	try:
+		if u.profile:
+			context['pic'] = u.profile.image.url
+	except:
+		print("User has no profile")
+	
+	return render(request, 'users/fetchProfile.html', context)
+
+def changePassword(request):
+	if not request.user.is_authenticated:
+		return redirect('polls-home')
+	elif request.method == 'POST':
+		form = PasswordChangeForm(request.user, request.POST)
+		if form.is_valid():
+			user = form.save()
+			update_session_auth_hash(request, user)
+			messages.success(request, 'Password Updated')
+			return redirect('profile')
+		else:
+			messages.info(request, 'Please enter correct details')
+			return redirect('change-password')
+	else:
+		form = PasswordChangeForm(request.user)
+		context = {
+			'title': 'Update password',
+			'form': form
+		}
+		return render(request, 'users/changePassword.html', context)
+
+
+def editProfile(request):
+	if not request.user.is_authenticated:
+		return redirect('polls-home')
+	elif request.method == 'POST':
+		p_form = ProfilePicUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+		u_form = UserProfileUpdateForm(request.POST, instance=request.user)
+		if p_form.is_valid() and u_form.is_valid():
+			p_form.save()
+			u_form.save()
+			messages.success(request, 'Profile Update.')
+			return redirect('profile')
+		else:
+			messages.info(request, f'Username already taken')
+			return redirect('edit-profile')
+	else:
+		u_form = UserProfileUpdateForm(instance=request.user)
+		p_form = ProfilePicUpdateForm(instance=request.user.profile)
+		context = {
+			'u_form': u_form,
+			'p_form': p_form,
+			'title' : 'Profile Update',
+		}
+		return render(request, 'users/edit-profile.html', context)
+
+def removePost(request, pid):
+	if not request.user.is_authenticated:
+		return redirect('polls-home')
+	else:
+		Post.objects.get(id=pid).delete()
+		messages.success(request, 'Post deleted.')
+		return redirect('profile')
+
+
+		

@@ -1,7 +1,7 @@
 {% extends "polls/base.html" %}
 {% block content %}
 	<div class="container">
-		<form class="form-group needs-validation" method="post" action="{% url 'edit-post' %}">
+		<form class="form-group needs-validation" method="post" action="{% url 'edit-post' pk %}">
 			{%csrf_token%}
 			<h1 class="h3 mb-3 font-weight-normal">Edit Post</h1>
 			<div class="pt-3">
@@ -9,7 +9,7 @@
 				value="{{post_title}}">
 			</div>
 			<div class="pt-3">
-				<input class="form-control" placeholder="Content" required name="content"></input>
+				<textarea rows="10" class="form-control" placeholder="Content" required name="content">{{ content }}</textarea>
 			</div>
 			<div class="pt-3">
 				<input type="submit" name="submit" class="btn btn-lg  btn-primary" value="Update post">

@@ -9,5 +9,12 @@ class Post(models.Model):
 	date_posted = models.DateTimeField(default=timezone.now)
 	author = models.ForeignKey(User, on_delete=models.CASCADE)
 
-	def get_absolute_url(self):
-		return reverse("edit-post", kwargs={"pk": self.pk})
+	def __str__(self):
+		return f'Post by {self.author}'
+
+class Profile(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	image = models.ImageField(default='profile.jpg', upload_to='profile_pics')
+
+	def __str__(self):
+		return f'{self.user.username} profile'

@@ -1,8 +1,13 @@
 {% extends "polls/base.html" %}
 {% block content %}
 	<div class="container mt-3">
-		<h2 class="text-left">{{user.first_name}} {{user.last_name}}</h3>
-		<p class="text-left text-muted">{{user.email}}</p><hr>
+		<img class="rounded-circle" src="{{pic}}" alt="{{pic}}" width="100" height="100">
+		<h2 class="text-left">{{user.first_name}} {{user.last_name}}</h3> 
+		<p class="text-left text-muted">{{user.email}}</p>
+		<p class="text-left text-muted">{{user.username}}</p>
+		<small class="text-muted"><a class="ml-2" href="{% url 'change-password' %}">Change Password</a> | </small>
+		<small class="text-muted"><a href="{% url 'edit-profile' %}">Edit profile</a></small>
+		<hr>
 	</div>
 	<div class="container">
 		<h3 class="text-left">Posts by You</h3>
@@ -19,10 +24,12 @@
 						<a class="mr-2" href="#">{{ post.author }}</a>
 						<small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
 					</div>
-					<h4><a class="article-title" href="#">{{ post.title }}</a> <a class="ml-2" href="{% url 'edit-post' pk=post.pk %}">edit</a></h4>
+					<h4><a class="article-title" href="#">{{ post.title }}</a> <small><a class="ml-2" href="{% url 'edit-post' pk=post.id %}">edit</a></small><small><a class="ml-2" href="{% url 'remove-post' pid=post.id %}">| remove</a></small></h4>
 					<p class="article-content">{{ post.content }}</p>
 				</div>
-			</article>
+			</article><hr>
 		{% endfor %}
 	{% endif %}
+	<script type="text/javascript">
+	</script>
 {% endblock content %}

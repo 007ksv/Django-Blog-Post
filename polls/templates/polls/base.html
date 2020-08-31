@@ -1,96 +1,86 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    {% block title %}
-      {% if title %}
-        <title>Django Blog Post - {{title}}</title>
-      {% else %}
-        <title>Django Blog Post - Default</title>
-      {% endif %}
-    {% endblock title%}
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-      <a class="navbar-brand" href="{% url 'polls-home' %}">Django Blog Post</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <span class="sr-only">(current)</span>
-            <a class="nav-link" href="{% url 'polls-about' %}">About</a>
-          </li>
-          {# ------------ check for if user is logged in or not ---------------- #}
-          {% if not user.is_authenticated %}
-          <li class="nav-item active ml-auto">
-            <span class="sr-only">(current)</span>
-            <a class="nav-link" href="{% url 'polls-signin' %}">Sign in</a>
-          </li>
-          <li class="nav-item active">
-            <span class="sr-only">(current)</span>
-            <a class="nav-link" href="{% url 'register' %}">Register</a>
-          </li>
-          {% else %}
-          <li class="nav-item active ml-auto">
-            <span class="sr-only">(current)</span>
-            <a class="nav-link" href="{% url 'profile' %}">Hello {{user.first_name}} {{user.last_name}}</a>
-          </li>
-          <li class="nav-item active">
-            <span class="sr-only">(current)</span>
-            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-          </li>
-          <li class="nav-item active">
-            <span class="sr-only">(current)</span>
-            <a class="nav-link" href="{% url 'new-post' %}">Create Post</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
-    </nav>
-    
-    <div class="container">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-{{message.tags}}">
-            {{message}}
-          </div>
-        {% endfor %}
-      {% endif %}
-      {% block content %}
-      {% endblock content %}
-    </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <!-- <footer class="container" style="color: white">
-      <div>
-        <div class="row">
-          <div class="copyright">
-            © Django Blog Post. Site by 
-          </div>
-          <div class="col-xs-12 col-sm-6 col-md-2 footer-link">
-            <ul class="first-ul">
-              <li>
-                <a href="{% url 'polls-home'%}">Home</a>
-              </li>
-              <li>
-                <a href="{% url 'polls-about' %}">About</a>
-              </li>
-              <li>
-                <a href="{% url 'polls-signin' %}">Sign In</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </footer> -->
-  </body>
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		{% block title %}
+			{% if title %}
+				<title>Django Blog Post - {{title}}</title>
+			{% else %}
+				<title>Django Blog Post - Default</title>
+			{% endif %}
+		{% endblock title%}
+	</head>
+	<body  onload="setTimeout(remove, 3500)">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+			<div class="container">
+				<a class="navbar-brand" href="{% url 'polls-home' %}">Django Blog Post</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item active">
+							<span class="sr-only">(current)</span>
+							<a class="nav-link" href="{% url 'polls-about' %}">About</a>
+						</li>
+						{# ------------ check for if user is logged in or not ---------------- #}
+						{% if not user.is_authenticated %}
+							<li class="nav-item active ml-auto">
+								<span class="sr-only">(current)</span>
+								<a class="nav-link" href="{% url 'polls-signin' %}">Sign in</a>
+							</li>
+							<li class="nav-item active">
+								<span class="sr-only">(current)</span>
+								<a class="nav-link" href="{% url 'register' %}">Register</a>
+							</li>
+							{% else %}
+							<div class="btn-group dropright">
+								<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								{{user.first_name}} {{user.last_name}}
+								</button>
+								<div class="dropdown-menu">
+									<a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+									<a class="dropdown-item" href="{% url 'edit-profile' %}">Edit profile</a>
+									<a class="dropdown-item" href="{% url 'new-post' %}">New Post</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+								</div>
+							</div>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container mt-3">
+			{% if messages %}
+				{% for message in messages %}
+					<div id="msg" class="alert alert-{{message.tags}}">
+						{{message}}
+					</div>
+				{% endfor %}
+			{% endif %}
+			{% block content %}
+			{% endblock content %}
+		</div>
+		<div class="mt-3">
+			<footer class="bg-dark" style="position: fixed; bottom: 0; text-align: center; color: white; width: 100%; left: 0;">
+				&copy; 2020  Django Blog Post | Designed by Keshav Sain :-)
+			</footer>
+		</div>
+		<!-- Optional JavaScript -->
+		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+		<script type="text/javascript">
+			function remove () {
+				document.getElementById('msg').style.display = 'none';
+			}
+		</script>
+		
+	</body>
 </html>
