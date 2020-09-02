@@ -2,12 +2,12 @@
 {% load crispy_forms_tags %}
 {% block content %}
 	<div class="container" style="width: 300px; margin: auto">
-		<form class="form-gorup needs-validation" method="POST" action="{% url 'edit-profile' %}" enctype="multipart/form-data">
+		<form method="POST" action="{% url 'edit-profile' %}" enctype="multipart/form-data">
 			{% csrf_token %}
-			{{u_form|crispy}}
-			{{p_form|crispy}}
+			{{ u_form|crispy }}
+			{{ p_form|crispy }}
 			<div class="pt-3">
-				<button class="btn btn-lg btn-outline-primary btn-block" type="submit">Update Pic</button>
+				<button class="btn btn-md btn-outline-primary btn-block" type="submit">Update Pic</button>
 			</div>
 		</form>
 	</div>

@@ -7,6 +7,7 @@ from django.contrib.auth.models import User, auth
 from django.core.paginator import Paginator, PageNotAnInteger
 
 def index(request):
+	print(request.user)
 	all_posts = Post.objects.order_by('-date_posted')
 	paginator = Paginator(all_posts, 4)
 	page = request.GET.get('page')

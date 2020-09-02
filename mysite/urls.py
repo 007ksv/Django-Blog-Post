@@ -31,7 +31,10 @@ urlpatterns = [
     path('change-password/', users_view.changePassword, name='change-password'),
     path('update-profile/', users_view.editProfile, name='edit-profile'),
     path('remove-post/<int:pid>', users_view.removePost, name='remove-post'),
-    
+    path('post-detail/<int:pid>', users_view.post_detail, name='post-detail'),
+    path('like_post/', users_view.like, name='like_post'),
+    path('favourite-post', users_view.favourite, name='favourite-post'),
+    path('list-favourites', users_view.list_favourites, name='list-favourites'),
 ]
 
 if settings.DEBUG:

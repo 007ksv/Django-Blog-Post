@@ -115,6 +115,8 @@ def edit(request, pk):
 def fetchProfile(request, username):
 	try:
 		u = User.objects.get(username=username)
+		if u == request.user:
+			return redirect('profile')
 	except:
 		return redirect('polls-home')
 	posts = Post.objects.filter(author=u).all()
@@ -127,8 +129,7 @@ def fetchProfile(request, username):
 		if u.profile:
 			context['pic'] = u.profile.image.url
 	except:
-		print("User has no profile")
-	
+		pass
 	return render(request, 'users/fetchProfile.html', context)
 
 def changePassword(request):
@@ -185,5 +186,57 @@ def removePost(request, pid):
 		messages.success(request, 'Post deleted.')
 		return redirect('profile')
 
+def post_detail(request, pid):
+	post = Post.objects.get(id=pid)
+	is_liked = False
+	is_favourite = False
+	
+	if post.like.filter(id=request.user.id).exists():
+		is_liked = True
+	
+	if post.favourite.filter(id=request.user.id).exists():
+		is_favourite = True
+	
 
-		
+	total_likes = post.like.count()
+	context = {
+		'title': post.title,
+		'is_favourite': is_favourite,
+		'post': post,
+		'is_liked': is_liked,
+		'total_likes': total_likes,
+	}
+	return render(request, 'users/post-detail.html', context)
+
+def like(requests):
+	post = Post.objects.get(id=requests.POST.get('like'))
+	is_liked = False
+	if post.like.filter(id=requests.user.id).exists():
+		post.like.remove(requests.user)
+		is_liked = False
+	else:
+		post.like.add(requests.user)
+		is_liked = True
+	return redirect('post-detail', pid=post.id, )
+
+def favourite(requests):
+	post = Post.objects.get(id=requests.POST.get('favourite'))
+	is_favourite = False
+	if post.favourite.filter(id=requests.user.id).exists():
+		post.favourite.remove(requests.user)
+		is_favourite = False
+	else:
+		post.favourite.add(requests.user)
+		is_favourite = True
+	return redirect('post-detail', pid=post.id)
+
+def list_favourites(request):
+	if not request.user.is_authenticated:
+		return redirect('polls-home')
+	u = request.user
+	posts = u.favourites.all()
+	context = {
+		'posts': posts,
+		'title': 'Favourite',
+	}
+	return render(request, 'users/list-favourites.html', context)

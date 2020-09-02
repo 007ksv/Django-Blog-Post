@@ -8,9 +8,11 @@ class Post(models.Model):
 	content = models.TextField()
 	date_posted = models.DateTimeField(default=timezone.now)
 	author = models.ForeignKey(User, on_delete=models.CASCADE)
+	like = models.ManyToManyField(User, related_name='likes')
+	favourite = models.ManyToManyField(User, related_name='favourites')
 
 	def __str__(self):
-		return f'Post by {self.author}'
+		return self.title
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
